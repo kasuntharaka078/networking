@@ -1,0 +1,215 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Configure Switch hostname as LOCAL-SWITCH
+
+	Switch(config)#hostname LOCAL-SWITCH
+ 
+
+Configure the message of the day as "Unauthorized access is forbidden"
+
+	Switch(config)#banner motd #
+	Unauthorized access is forbidden#
+ 
+
+Configure the password for privileged mode access as "cisco". The password must be md5 encrypted
+
+	Switch(config)#enable secret cisco
+ 
+
+Configure password encryption on the switch using the global configuration command
+
+Password encryption is an important setting for securing switch credentials as defaut behavior is saving clear-text passwords in the running-config. Although useful to avoid naive hacking,be advised that tools have been released to crack those passwords. Use the service password-encryption command with additional security measures. 
+
+	Switch(config)#service password-encryption
+ 
+
+Configure CONSOLE access [...]
+
+	Switch(config)#line con 0
+
+	Switch(config-line)#password ciscoconsole
+	Switch(config-line)#logging synchronous
+	Switch(config-line)#login
+	Switch(config-line)#history size 15
+	Switch(config-line)#exec-timeout 6 45
+
+Configure TELNET access [...]
+
+	Switch(config)#line vty 0 15
+
+	Switch(config-line)#exec-timeout 8 20
+	Switch(config-line)#password ciscotelnet
+	Switch(config-line)#logging synchronous
+	Switch(config-line)#login
+	Switch(config-line)#history size 15
+
+Configure the IP address of the switch as 192.168.1.2/24 and it's default gateway IP (192.168.1.1).
+
+	Switch(config)#interface Vlan1
+
+	Switch(config-if)#ip address 192.168.1.2 255.255.255.0
+	Switch(config-if)#ip default-gateway 192.168.1.1
+
+Configure each link between switches as a trunk line using the switchport mode truink command
+
+	interface GigabitEthernet1/1
+	switchport mode trunk
+
+	interface GigabitEthernet1/2
+	switchport mode trunk
+
+Configure VLAN 10 with name "STUDENTS" and VLAN 50 with name "SERVERS"
+
+On the VTP server Catalyst 2960 switch, configure the following commands to create both "STUDENTS" and "SERVERS" vlans :
+
+	VTP-SERVER(config)#vlan 10
+	VTP-SERVER(config-vlan)#name STUDENTS
+	VTP-SERVER(config)#vlan 50
+	VTP-SERVER(config-vlan)#name SERVERS
+
+
+Configuring DHCP Server
+
+Open the DHCP router and click the CLI tab.
+Issue the following
+	no for initial configuration details.
+Enter
+	Router > en
+	Router # conf t
+	Router(config) # host
+	Router(config)# hostname DHCP_Server
+	DHCP_Server(config)# int f0/0
+
+Set the IP address.
+	DHCP_Server(config-if)# ip address 192.168.1.1
+	255.255.255.0
+	DHCP_Server(config-if)#int f0/1
+
+	DHCP_Server(config-if)#ip add 192.168.2.1
+	255.255.255.0
+	DHCP_Server(config-if)#no sh
+
+Now we have enabled two interfaces fa0/0 and fa0/1 in
+the DHCP Server
+	DHCP_Server(config-if)#exit
+
+Lets create an IP pool.
+	DHCP_Server(config)#ip dhcp pool NET1
+Enter
+
+If you want to see DHCP subcommands type ? And
+enter.
+
+Set the default-router as 192.168.1.1
+	DHCP_Server(config)#default-router 192.168.1.1
+This means for example whenever PC1 wants an IP
+address 192.168.1.1 will be the gateway.
+
+We also want to tell for which pool this network is
+configured for.
+	DHCP_Server(config)#network 192.168.1.0
+	255.255.255.0
+
+Telling about the IP address of the DNS Server to the
+DHCP-Server
+	DHCP_Server(config)#dns-server 192.168.1.2
+Here we don’t have to give the sub netmask
+
+Configuring DNS Server
+
+Click the DNS Server and click the Desktop tab and
+go to the IP Configuration.
+
+Remember DNS server comes under the infrastructure
+network so we need to set the static IP address.
+
+Click the Web Server and click the Desktop tab and
+go to the IP Configuration.
+
+Configuring Web Server
+
+Click the Web Server and click the Desktop tab and
+go to the IP Configuration.
+
+Translates domain names to IP addresses in DNS
+Click the DNS Server
+
+Now google.com is converted to 192.168.1.3
+
+Testing the DHCP
+
+Open PC0 and get the IP address using DHCP.
+Choose PC0 > Desktop > IP Configuration
+You can observe that PC0 automatically getting the IP
+address from the DHCP Server.
+
+Reserve a range of IP address in DHCP Server
+Open DHCP Server in CLI.
+Do the following.
+	DHCP-Server >en
+	DHCP-Server >config t
+	DHCP-Server(config) #ip dhcp excluded-address
+	192.168.1.1 192.168.1.10
+Now Open PC0 and obtain the IP address
+automatically and see what will happen.
